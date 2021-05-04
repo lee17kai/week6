@@ -20,24 +20,38 @@ exports.handler = async function(event) {
   // turn the listings file into a JavaScript object, wait for that to happen
   let listingsFromCsv = await csv(listingsFile)
 
-  // write the number of listings (the array's length) to the back-end console
+  // have a look in the console. Will appear below
+  console.log(listingsFromCsv)
 
-  // write the first few listings to the back-end console, to see what we're working with
+  // write the number of listings (the array's length) to the back-end console
+  console.log(`There are ${listingsFromCsv.length} listings.`)
+  // write the first few listings to the back-end console, to see what we're working with (can show you the fields we have)
+  console.log(listingsFromCsv[0])
+
 
   // create a new object to hold the count and listings data
 
   // start with an empty Array for the listings
+  let listingsToReturn = []
   
   // loop through all listings, for each one:
-    // store each listing in memory
-    // check if the rating is at least 99, if so:
-      // add the listing to the Array of listings to return
+  for(let i = 0; i < listingsFromCsv.length; i++){
 
+  
+    // store each listing in memory
+    let listing = listingsFromCsv[i]
+    // check if the rating is at least 99, if so: (gotta go thru the console stuff below to find the variable name)
+    if(listing.review_scores_rating >= 99){
+      // add the listing to the Array of listings to return
+      listingsToReturn.push(listing) // adds the listing to the list
+    }
+
+  }
   // add the number of listings to the returned listings Object
 
   // a lambda function returns a status code and a string of data
   return {
     statusCode: 200, // https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
-    body: `Hello from the back-end!` // a string of data
+    body: JSON.stringify(listingsToReturn) // a string of data
   }
 }
