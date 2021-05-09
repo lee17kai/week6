@@ -14,6 +14,14 @@ let fs = require('fs')
 // defines a lambda function
 exports.handler = async function(event) {
 
+  //have a look at the event object
+  console.log(event)
+
+  //grab number of bedrooms from query string parameters
+  let numBedrooms = event.queryStringParameters.numBedrooms
+  //write out the number of bedrooms requested
+  console.log(`Number of bedrooms requested: ${numBedrooms}`)
+
   // read listings CSV file from disk
   let listingsFile = fs.readFileSync(`./listings.csv`)
   
@@ -32,7 +40,10 @@ exports.handler = async function(event) {
   // create a new object to hold the count and listings data
 
   // start with an empty Array for the listings
-  let listingsToReturn = []
+  let listingsToReturn = {
+    count: 0,
+    listings: []
+  }
   
   // loop through all listings, for each one:
   for(let i = 0; i < listingsFromCsv.length; i++){
@@ -41,9 +52,10 @@ exports.handler = async function(event) {
     // store each listing in memory
     let listing = listingsFromCsv[i]
     // check if the rating is at least 99, if so: (gotta go thru the console stuff below to find the variable name)
-    if(listing.review_scores_rating >= 99){
+    if(listing.review_scores_rating >= 99 && listing.bedrooms >= numBedrooms){
       // add the listing to the Array of listings to return
-      listingsToReturn.push(listing) // adds the listing to the list
+      listingsToReturn.listings.push(listing) // adds the listing to the list
+      listingsToReturn.count = listingsToReturn.count + 1 // each one we add, we increment count
     }
 
   }
